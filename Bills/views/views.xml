@@ -1,0 +1,726 @@
+<odoo>
+  <data>
+    <!-- Top menu item -->
+
+    <menuitem name="الإجراءات الداخلية" id="bills_root" web_icon="Bills,static/description/icon.png" groups="parentid.employee"/>
+
+      
+        <record id="action_admin_approve_bills" model="ir.actions.server">
+            <field name="name">الإعتماد</field>
+            <field name="model_id" ref="model_bills_management"/>
+            <field name="binding_model_id" ref="model_bills_management"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_admin_approve()</field>
+            <field name="groups_id" eval="[(4,ref('parentid.director'))]"/>
+        </record>
+
+        <record id="action_admin_refuse_bills" model="ir.actions.server">
+            <field name="name">الرفض</field>
+            <field name="model_id" ref="model_bills_management"/>
+            <field name="binding_model_id" ref="model_bills_management"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_admin_refuse()</field>
+            <field name="groups_id" eval="[(4,ref('parentid.director'))]"/>
+        </record>
+
+
+      
+      
+    <!-- bills -->
+      
+        <record id="bills_form" model="ir.ui.view">
+            <field name="name">الفواتير</field>
+            <field name="model">bills.management</field>
+            <field name="arch" type="xml">
+                <form string="الفواتير">
+                <header>
+                    <field name="is_bills_officer" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="موافقة المحاسب" name="action_accountant_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_accountant', '=', False)]}"/>
+                    <button string="التوصية بالأعتماد" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'accountant_ap'),('is_bills_officer', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'hr_ap'),('is_director', '=', False)]}"/>
+                    <button string="الرفض" name="action_admin_refuse" type="object" class="oe_highlight" attrs="{'invisible': [('is_bills_officer', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|', ('state', '!=', 'refuse')]}"/>
+                    <button string="تم تسديدها" name="action_paid" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'admin_ap'),('is_accountant', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_bills_officer', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}" />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="الفواتير">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>   
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>   
+                        <group>
+                            <field name="expense_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="file" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="bank" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                     <group>
+                            <field name="note" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+      
+    <record model="ir.ui.view" id="bills_list">
+      <field name="name">الفواتير</field>
+        <field name="model">bills.management</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="expense_amount"/>
+          <field name="file" widget="binary"/>
+          <field name="bank" widget="binary"/>
+          <field name="note"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="bills_action">
+        <field name="name">الفواتير</field>
+        <field name="res_model">bills.management</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'group_by':['bills_state']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك فواتير
+            </p>
+        </field>
+    </record>
+
+
+    <!-- actions -->
+
+    <menuitem name="الفواتير" id="bills_menu" parent="bills_root" action="bills_action" sequence="1"/>  
+      
+    <!-- Custoday -->
+        <record id="custody_done_request_form" model="ir.ui.view">
+            <field name="name">Custoday.form</field>
+            <field name="model">asset.donerequest</field>
+            <field name="arch" type="xml">
+                <form string="إخلاء طرف">
+                    <group>
+                       <group>
+                           <field name="back"/>
+                       </group>  
+                    </group>                 
+                    <footer>
+                        <button name="donerequest" string="إخلاء طرف" type="object" class="btn-primary"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>                    
+                 </form>
+            </field>
+        </record>
+
+        <record id="custody_form" model="ir.ui.view">
+            <field name="name">Custoday.form</field>
+            <field name="model">custody.management</field>
+            <field name="arch" type="xml">
+                <form string="العهدة المالية">
+                <header>
+                    <field name="is_bills_officer" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="الموافقة" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_bills_officer', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'approval'),('is_director', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_bills_officer', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}"/>
+                    <button string="طلب إخلاء طرف" name="done_request_action" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'admin_ap')]}"/>
+                    <button string="إخلاء طرف" name="action_done" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'done_request'),('is_bills_officer', '=', False)]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="العهدة المالية">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="job_position" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="iban"  attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>   
+                        <group>
+                            <field name="date_custody" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="back" readonly='1'/>
+                            <field name="custody"  attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="custody_remaining"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="sign"  widget="signature" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                     <group>
+                         <field name="bills_ids">
+                             <tree editable="bottom">
+                                 <field name="name"/>
+                                 <field name="expense_amount"/>
+                                 <field name="file" widget="binary"/>
+                                 <field name="bank" widget="binary"/>
+                             </tree>
+                         </field>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+      
+    <record model="ir.ui.view" id="custody_list">
+      <field name="name">العهدة المالية</field>
+        <field name="model">custody.management</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="custody"/>
+          <field name="date_custody" />
+          <field name="custody_remaining"/>
+          <field name="sign" widget="binary"/>
+          <field name="state"/>            
+        </tree>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="custody_action">
+        <field name="name">العهدة المالية</field>
+        <field name="res_model">custody.management</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك عهدة مالية
+            </p>
+        </field>
+    </record>
+
+
+    <!-- actions -->
+
+    <menuitem name="العهدة المالية" id="custody_menu" parent="Bills.bills_root" action="custody_action" sequence="2"/>
+
+      
+      
+    <!-- Asset Custoday -->
+      
+    <record id="account_asset_custody_form_view" model="ir.ui.view">
+        <field name="name">account.asset.form.view</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='original_value']" position="before">
+                <field name="id" string="كود الأصل"/>
+                <field name="s_number"/>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <field name="employees_asset_custody"/>
+                </group>
+            </xpath>  
+        </field>
+    </record>
+
+      
+        <record id="asset_done_request_form" model="ir.ui.view">
+            <field name="name">Custoday.form</field>
+            <field name="model">asset.donerequest</field>
+            <field name="arch" type="xml">
+                <form string="إخلاء طرف">
+                    <group>
+                       <group>
+                           <field name="back"/>
+                           <field name="back_state"/>
+                       </group>  
+                    </group>                 
+                    <footer>
+                        <button name="donerequest" string="إخلاء طرف" type="object" class="btn-primary"/>
+                        <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                    </footer>                    
+                 </form>
+            </field>
+        </record>
+
+        <record id="asset_custody_form" model="ir.ui.view">
+            <field name="name">Custoday.form</field>
+            <field name="model">asset.custody</field>
+            <field name="arch" type="xml">
+                <form string="العهدة العينية">
+                <header>
+                    <field name="is_bills_officer" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="الموافقة" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_bills_officer', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'approval'),('is_director', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_bills_officer', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}"/>
+                    <button string="طلب إخلاء طرف" name="done_request_action" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'admin_ap')]}"/>
+                    <button string="إخلاء طرف" name="action_done" type="object" groups="hr.group_hr_manager" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'done_request')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="العهدة العينية">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="job_position" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="asset_id" groups="account.group_account_manager" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="recived" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="back" readonly='1'/>
+                            <field name="back_state" readonly='1'/>
+                        </group>  
+                        <group>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="sign"  widget="signature" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+      
+    <record model="ir.ui.view" id="asset_custody_list">
+      <field name="name">العهدة العينية</field>
+        <field name="model">asset.custody</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="job_position"/>
+          <field name="recived"/>
+          <field name="back"/>
+          <field name="sign" widget="binary"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="asset_custody_action">
+        <field name="name">العهدة العينية</field>
+        <field name="res_model">asset.custody</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك عهدة عينية
+            </p>
+        </field>
+    </record>
+
+
+    <!-- actions -->
+
+    <menuitem name="العهدة العينية" id="asset_custody_menu" parent="Bills.bills_root" action="asset_custody_action" sequence="3"/>
+
+      
+      
+      
+    <!-- buying order -->
+      
+        <record id="buying_order_form" model="ir.ui.view">
+            <field name="name">سند الصرف</field>
+            <field name="model">buying.order</field>
+            <field name="arch" type="xml">
+                <form string="سند الصرف">
+                <header>
+                    <field name="is_bills_officer" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="موافقة المحاسب" name="action_accountant_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_accountant', '=', False)]}"/>
+                    <button string="التوصية بالأعتماد" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'accountant_ap'),('is_bills_officer', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'hr_ap'),('is_director', '=', False)]}"/>
+                    <button string="الرفض" name="action_admin_refuse" type="object" class="oe_highlight" attrs="{'invisible': [('is_bills_officer', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|', ('state', '!=', 'refuse')]}"/>
+                    <button string="تم تسديدها" name="action_paid" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'admin_ap'),('is_accountant', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_bills_officer', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="سند الصرف">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="partner_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="file" attrs="{'readonly': [('state', '!=', 'admin_ap')]}"/>
+                        </group>   
+                        <group>
+                            <field name="product" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="expense_amount" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="reason" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                     <group>
+                         <field name="note" attrs="{'readonly': [('state', '=', 'paid')]}"/>
+                     </group>
+                     <group>
+                         <field name="terms"/>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+            
+    <record model="ir.ui.view" id="buying_order_list">
+      <field name="name">سند الصرف</field>
+        <field name="model">buying.order</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="product"/>
+          <field name="expense_amount"/>
+          <field name="file" widget="binary"/>
+          <field name="note"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="buying_order_action">
+        <field name="name">سند الصرف</field>
+        <field name="res_model">buying.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك سند صرف
+            </p>
+        </field>
+    </record>
+
+    <!-- actions -->
+
+    <menuitem name="سند الصرف" id="buying_order_menu" parent="bills_root" action="buying_order_action" sequence="4"/> 
+      
+      
+    <!-- bonus exchange -->
+      
+    <record id="bonus_form" model="ir.ui.view">
+            <field name="name">صرف مكافأة</field>
+            <field name="model">bonus.exchange</field>
+            <field name="arch" type="xml">
+                <form string="صرف مكافأة">
+                <header>
+                    <field name="is_hr" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="موافقة المحاسب" name="action_accountant_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_accountant', '=', False)]}"/>
+                    <button string="التوصية بالأعتماد" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'accountant_ap'),('is_hr', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'hr_ap'),('is_director', '=', False)]}"/>
+                    <button string="الرفض" name="action_admin_refuse" type="object" class="oe_highlight" attrs="{'invisible': [('is_hr', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|', ('state', '!=', 'refuse')]}"/>
+                    <button string="تم تسديدها" name="action_paid" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'admin_ap'),('is_accountant', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_hr', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="صرف مكافأة">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="executive_d" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>   
+                        <group>
+                            <field name="date_bonus" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="bonus"  attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="sign"  widget="signature" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+      
+    <record model="ir.ui.view" id="bonus_list">
+      <field name="name">صرف مكافأة</field>
+        <field name="model">bonus.exchange</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="executive_d"/>
+          <field name="bonus"/>
+          <field name="date_bonus"/>
+          <field name="reason"/>
+          <field name="state"/> 
+          <field name="sign" widget="binary"/>
+        </tree>
+      </field>
+    </record> 
+      
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="bonus_exchange_action">
+        <field name="name">صرف مكافأة</field>
+        <field name="res_model">bonus.exchange</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك صرف مكافأة
+            </p>
+        </field>
+    </record>
+      
+    <menuitem name="صرف مكافأة" id="bonus_exchange_menu" parent="bills_root" action="bonus_exchange_action" sequence="5"/>
+
+      
+    <!-- commission exchange -->
+      
+    <record id="commission_form" model="ir.ui.view">
+            <field name="name">صرف عمولة</field>
+            <field name="model">commission.exchange</field>
+            <field name="arch" type="xml">
+                <form string="صرف عمولة">
+                <header>
+                    <field name="is_hr" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="موافقة المحاسب" name="action_accountant_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_accountant', '=', False)]}"/>
+                    <button string="التوصية بالأعتماد" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'accountant_ap'),('is_hr', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'hr_ap'),('is_director', '=', False)]}"/>
+                    <button string="الرفض" name="action_admin_refuse" type="object" class="oe_highlight" attrs="{'invisible': [('is_hr', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|', ('state', '!=', 'refuse')]}"/>
+                    <button string="تم تسديدها" name="action_paid" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'admin_ap'),('is_accountant', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_hr', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="صرف عمولة">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="executive_d" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>   
+                        <group>
+                            <field name="date_commission" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="commission"  attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="reason"/>
+                            <field name="notes"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="sign"  widget="signature" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+      
+    <record model="ir.ui.view" id="commission_list">
+      <field name="name">صرف عمولة</field>
+        <field name="model">commission.exchange</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="executive_d"/>
+          <field name="commission"/>
+          <field name="date_commission"/>
+          <field name="reason"/>
+          <field name="notes"/>
+          <field name="state"/>
+          <field name="sign" widget="binary"/>
+        </tree>
+      </field>
+    </record> 
+      
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="commission_exchange_action">
+        <field name="name">صرف عمولة</field>
+        <field name="res_model">commission.exchange</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك صرف عمولة
+            </p>
+        </field>
+    </record>
+  
+      
+    <menuitem name="صرف عمولة" id="commission_exchange_menu" parent="Bills.bills_root" action="commission_exchange_action" sequence="6"/>
+      
+      
+      
+    <!-- assignment exchange -->
+      
+    <record id="assignment_form" model="ir.ui.view">
+            <field name="name">صرف بدل انتداب</field>
+            <field name="model">assignment.allowance</field>
+            <field name="arch" type="xml">
+                <form string="صرف بدل انتداب">
+                <header>
+                    <field name="is_hr" invisible="1"/>
+                    <field name="is_director" invisible="1"/>
+                    <field name="is_accountant" invisible="1"/>
+                    <button string="موافقة المحاسب" name="action_accountant_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'draft'),('is_accountant', '=', False)]}"/>
+                    <button string="التوصية بالأعتماد" name="action_hr_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'accountant_ap'),('is_hr', '=', False)]}"/>
+                    <button string="الإعتماد" name="action_admin_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'hr_ap'),('is_director', '=', False)]}"/>
+                    <button string="الرفض" name="action_admin_refuse" type="object" class="oe_highlight" attrs="{'invisible': [('is_hr', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|', ('state', '!=', 'refuse')]}"/>
+                    <button string="تم تسديدها" name="action_paid" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'admin_ap'),('is_accountant', '=', False)]}"/>
+                    <button string="مسودة" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('is_hr', '=', False),('is_director', '=', False),('is_accountant', '=', False),'|',('state', '=', 'draft')]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet string="صرف بدل انتداب">
+                     <div class="oe_title">
+                       <h1>
+                          <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                       </h1>
+                     </div>
+                     <group>
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="executive_d" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>   
+                        <group>
+                            <field name="date_assignment" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="assignment"  attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="reason"/>
+                            <field name="notes"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="sign"  widget="signature" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                     </group>
+                </sheet>
+                    <div class="o_attachment_preview"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                 </form>
+            </field>
+        </record>
+      
+    <record model="ir.ui.view" id="assignment_list">
+      <field name="name">صرف بدل انتداب</field>
+        <field name="model">assignment.allowance</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="executive_d"/>
+          <field name="assignment"/>
+          <field name="date_assignment"/>
+          <field name="reason"/>
+          <field name="notes"/>
+          <field name="state"/>
+          <field name="sign" widget="binary"/>
+        </tree>
+      </field>
+    </record> 
+      
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="assignment_allowance_action">
+        <field name="name">صرف بدل انتداب</field>
+        <field name="res_model">assignment.allowance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+               لا توجد لديك صرف بدل انتداب
+            </p>
+        </field>
+    </record>
+      
+    <menuitem name="صرف بدل انتداب" id="assignment_allowance_menu" parent="bills_root" action="assignment_allowance_action" sequence="7"/>
+
+      
+  </data>
+</odoo>

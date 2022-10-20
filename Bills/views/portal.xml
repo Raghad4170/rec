@@ -1,0 +1,416 @@
+<odoo>
+     
+    <template id="thankyou_msg_bills" name="تم إنشاء الفاتورة بنجاح">
+            <t t-call="website.layout">
+     <div class="wrap  d-flex">
+                <div class="container  d-flex flex-column mb-5">
+                    <div  style="padding-top:20px;">                
+                    <p><h1>تم إنشاء الفاتورة بنجاح</h1></p>
+                    </div>
+                </div>
+            </div>  
+            </t>
+    </template>
+    <template id="create_bills" name="إنشاء الفاتورة">
+        <t t-call="website.layout">
+        <div class="container pt-5">
+            <div align="center">
+                <h2 class="text-muted">
+                    إنشاء الفاتورة 
+                </h2>
+            </div>
+            <div class="pt-5"/>
+            <span class="hidden" data-for="create_bills"/>
+              <div id="create_bills_section">
+                <section id="forms">
+                 <div class="container">                                        
+                  <form id="contactus_form_cl" action="/submit_bills" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="mail.mail" data-success-mode="redirect" data-success-page="/contactus-thank-you" data-pre-fill="true">
+                      <div>
+                            <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="name">
+                                            <span class="s_website_form_label_content">اسم الفاتورة</span>
+                                            <span class="s_website_form_mark"> *</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="name" type='text' class='form-control s_website_form_input' name="name" required="True"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="float">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="expense_amount">
+                                            <span class="s_website_form_label_content">مبلغ الفاتورة</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="expense_amount" type='float' class='form-control s_website_form_input' name="expense_amount"/> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="bank">
+                                            <span class="s_website_form_label_content">الحوالة البنكية</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="bank" type="file" name="bank" class="form-control s_website_form_input"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field">
+                                        <div class="row s_col_no_resize s_col_no_bgcolor">
+                                            <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="file">
+                                                <span class="s_website_form_label_content">ملف الفاتورة</span>
+                                            </label>
+                                            <div class="col-sm col-xs-12">
+                                                <input id="file" type="file" name="file" class="form-control s_website_form_input"/>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="note">
+                                            <span class="s_website_form_label_content">ملاحظات</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="note" type='text' class='form-control s_website_form_input' name="note"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div align="left">
+                                    <button type="submit" id="submit_msg" class="btn btn-primary">إرسال</button>  
+                                </div> 
+                            </div>
+                      </form>
+                  </div>
+                </section>
+             </div> 
+           </div>
+        </t>
+    </template>
+    
+    <template id="thankyou_msg_custody" name="شكرا لك على إنشاء العهدة المالية">
+            <t t-call="website.layout">
+     <div class="wrap  d-flex">
+                <div class="container  d-flex flex-column mb-5">
+                    <div  style="padding-top:20px;">                
+                        <p><h1>شكرا لك على إنشاء العهدة المالية</h1></p>
+                    </div>
+                </div>
+            </div>
+          </t>
+    </template>
+    <template id="create_custody" name="إنشاء العهدة المالية">
+        <t t-call="website.layout">
+        <div class="container pt-5">
+            <div align="center">
+                <h2 class="text-muted">
+                    إنشاء العهدة
+                </h2>
+            </div>
+            <div class="pt-5"/>
+            <span class="hidden" data-for="create_custody"/>
+            <div id="create_custody_section">
+                <section id="forms">
+                    <div class="container">                                        
+                      <form id="contactus_form_cl" action="/submit_custody" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="mail.mail" data-success-mode="redirect" data-success-page="/contactus-thank-you" data-pre-fill="true">
+                            <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="name">
+                                            <span class="s_website_form_label_content">اسم العهدة المالية</span>
+                                            <span class="s_website_form_mark"> *</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="name" type="text" class="form-control s_website_form_input" name="name"  t-att-value="name" required="True"/>
+                                        </div>
+                                    </div>  
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="job_position">
+                                            <span class="s_website_form_label_content">المسمى الوظيفي</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="job_position" type="text" class="form-control s_website_form_input" name="job_position"  t-att-value="job_position"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="iban">
+                                            <span class="s_website_form_label_content">رقم حساب (الآيبان)</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="iban" type="text" class="form-control s_website_form_input" name="iban"  t-att-value="iban"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="date">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="date_custody">
+                                            <span class="s_website_form_label_content">التاريخ</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="date_custody" type="date" class="form-control s_website_form_input" name="date_custody"  t-att-value="date_custody"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="float">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="custody">
+                                            <span class="s_website_form_label_content">المبلغ</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="custody" type='float' class='form-control s_website_form_input' name="custody"/> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="float">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="custody_remaining">
+                                            <span class="s_website_form_label_content">المبلغ المتبقي</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="custody_remaining" type='float' class='form-control s_website_form_input' name="custody_remaining"/> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div align="left">
+                                    <button type="submit" id="submit_msg" class="btn btn-primary">إرسال</button>  
+                                </div>                       
+                      </form>
+                  </div>
+                </section>
+             </div>
+           </div>
+        </t>
+    </template>
+    
+    <template id="thankyou_msg_asset" name="شكرا لك على إنشاء العهدة العينية">
+            <t t-call="website.layout">
+     <div class="wrap  d-flex">
+                <div class="container  d-flex flex-column mb-5">
+                    <div  style="padding-top:20px;">                
+                        <p><h1>شكرا لك على إنشاء العهدة العينية</h1></p>
+                    </div>
+                </div>
+            </div>
+          </t>
+    </template>
+    <template id="create_asset" name="إنشاء العهدة العينية">
+        <t t-call="website.layout">
+        <div class="container pt-5">
+            <div align="center">
+                <h2 class="text-muted">
+                    إنشاء العهدة
+                </h2>
+            </div>
+            <div class="pt-5"/>
+            <span class="hidden" data-for="create_asset"/>
+            <div id="create_asset_section">
+                <section id="forms">
+                    <div class="container">                                        
+                      <form id="contactus_form_cl" action="/submit_asset" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="mail.mail" data-success-mode="redirect" data-success-page="/contactus-thank-you" data-pre-fill="true">
+                            <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="name">
+                                            <span class="s_website_form_label_content">اسم العهدة العينية</span>
+                                            <span class="s_website_form_mark"> *</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="name" type="text" class="form-control s_website_form_input" name="name"  t-att-value="name" required="True"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="job_position">
+                                            <span class="s_website_form_label_content">المنصب الوظيفي</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="job_position" type="text" class="form-control s_website_form_input" name="job_position"  t-att-value="job_position"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_form_label_content s_website_form_model_required">      
+                                  <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content"  for="asset_list">نوع العهدة</span>
+                                        </label>
+                                    <div class="col-sm col-xs-12">
+                                        <select name="asset_list" t-attf-class="form-control">
+                                            <t t-foreach="asset_list" t-as="asset">
+                                                <option t-att-value="asset.id">
+                                                  <t t-esc="asset.name" />
+                                                </option>
+                                            </t>
+                                        </select>                                                       
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="date">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="recived">
+                                            <span class="s_website_form_label_content">تاريخ استلام العهدة</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="recived" type="date" class="form-control s_website_form_input" name="recived"  t-att-value="recived"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="date">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="back">
+                                            <span class="s_website_form_label_content">تاريخ إخلاء الطرف</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="back" type="date" class="form-control s_website_form_input" name="back" t-att-value="back" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="back_state">
+                                            <span class="s_website_form_label_content">حالة العهدة عند إخلاء الطرف</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="back_state" type="text" class="form-control s_website_form_input" name="back_state"  t-att-value="back_state"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div align="left">
+                                    <button type="submit" id="submit_msg" class="btn btn-primary">إرسال</button>  
+                                </div>                       
+                      </form>
+                  </div>
+                </section>
+             </div>
+           </div>
+        </t>
+    </template>
+    
+    
+    
+    <template id="thankyou_msg_buying" name="شكرا لك على إنشاء سند الصرف">
+            <t t-call="website.layout">
+     <div class="wrap  d-flex">
+                <div class="container  d-flex flex-column mb-5">
+                    <div  style="padding-top:20px;">                
+                        <p><h1>شكرا لك على إنشاء سند الصرف</h1></p>
+                    </div>
+                </div>
+            </div>
+          </t>
+    </template>
+    <template id="create_buying" name="إنشاء سند">
+        <t t-call="website.layout">
+        <div class="container pt-5">
+            <div align="center">
+                <h2 class="text-muted">
+                    إنشاء سند
+                </h2>
+            </div>
+            <div class="pt-5"/>
+            <span class="hidden" data-for="create_buying"/>
+            <div id="create_buying_section">
+                <section id="forms">
+                    <div class="container">                                        
+                      <form id="contactus_form_cl" action="/submit_buying" method="post" enctype="multipart/form-data" class="o_mark_required" data-mark="*" data-model_name="mail.mail" data-success-mode="redirect" data-success-page="/contactus-thank-you" data-pre-fill="true">
+                            <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="name">
+                                            <span class="s_website_form_label_content">اسم سند الصرف</span>
+                                            <span class="s_website_form_mark"> *</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="name" type="text" class="form-control s_website_form_input" name="name"  t-att-value="name" required="True"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_form_label_content s_website_form_model_required">      
+                                  <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content"  for="partner_list">المورد</span>
+                                        </label>
+                                    <div class="col-sm col-xs-12">
+                                        <select name="partner_list" t-attf-class="form-control">
+                                            <t t-foreach="partner_list" t-as="partner">
+                                                <option t-att-value="partner.id">
+                                                  <t t-esc="partner.name" />
+                                                </option>
+                                            </t>
+                                        </select>                                                       
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="product">
+                                            <span class="s_website_form_label_content">المنتج</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="product" type="text" class="form-control s_website_form_input" name="product"  t-att-value="product"/>
+                                        </div>
+                                    </div> 
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="amount">
+                                            <span class="s_website_form_label_content">الكمية</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="amount" type="text" class="form-control s_website_form_input" name="amount"  t-att-value="amount"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="float">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="expense_amount">
+                                            <span class="s_website_form_label_content">السعر المتوقع</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="expense_amount" type='float' class='form-control s_website_form_input' name="expense_amount"/> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="reason">
+                                            <span class="s_website_form_label_content">سبب الصرف</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="reason" type="text" class="form-control s_website_form_input" name="reason"  t-att-value="reason"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="note">
+                                            <span class="s_website_form_label_content">ملاحظات</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="note" type='text' class='form-control s_website_form_input' name="note"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12 s_website_form_field s_website_form_model_required" data-type="char">
+                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                        <label class="col-form-label col-auto s_website_form_label" style="width: 200px" for="terms">
+                                            <span class="s_website_form_label_content">ملاحظة</span>
+                                        </label>
+                                        <div class="col-sm col-xs-12">
+                                            <input id="terms" type='text' class='form-control s_website_form_input' name="terms"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div align="left">
+                                    <button type="submit" id="submit_msg" class="btn btn-primary">إرسال</button>  
+                                </div>                       
+                      </form>
+                  </div>
+                </section>
+             </div>
+           </div>
+        </t>
+    </template>
+</odoo>
