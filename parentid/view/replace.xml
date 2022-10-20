@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+    <record model="ir.ui.view" id="note_replace_form_view">
+        <field name="name">note.replace.form.view</field>
+        <field name="model">note.replace</field>
+    	<field name="arch" type="xml">
+            <form>
+                <sheet>
+                <group>
+                    <group>
+                        <field name="name"/> 
+                    </group>
+                    <group>
+                        <field name="sale_field"/>
+                    </group>
+                </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="note_replace_tree_view">
+        <field name="name">note.replace.tree.view</field>
+        <field name="model">note.replace</field>
+    	<field name="arch" type="xml">
+            <tree>
+                <field name="name"/> 
+                <field name="sale_field"/> 
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="note_replace_master_action">
+        <field name="name">استبدالات الشروط والأحكام</field>
+        <field name="type">ir.actions.act_window</field>                
+        <field name="res_model">note.replace</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="note_replace_tree_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                    لا توجد طريقة استبدال لنصنع واحدة!
+            </p>
+        </field>
+
+    </record>
+    
+    <menuitem id="menu_note_replace" name="استبدالات الشروط والأحكام" sequence="10" action="note_replace_master_action" parent="sale.menu_sale_config"/>
+           
+    </data>
+</odoo>

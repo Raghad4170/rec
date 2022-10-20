@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+<div t-extend="web.FieldBinarySignature">
+<div t-jquery="div" t-operation="replace">
+    <div class="o_sign_signature_draw panel panel-default mt16 mb0">
+      <div style="display:none;" class="form-group row">
+            <label  class="col-sm-3 col-form-label" for="email">Email</label>
+            <div class="col-sm">
+                <div id="input-group" style="display:none;" class="input-group">
+                    <input type="text" style="display:none;" name="phone" id="o_sign_email_input" placeholder="name@test.com" class="form-control"/>
+                    <button  style="display:none;" class='input-group-append btn btn-sm btn-primary o_sign_resend_sms'>Send Email</button>
+                </div>
+                <span style="display:none;" class="text-muted form-text">A Email will be sent to the following email address. Please update it if it's not relevant.</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="validation_code_email">Validation Code</label>
+            <div class="col-sm">
+                <input type="text" name="validation_code_email" id="o_sign_public_signer_email_input" placeholder="e.g. 314159" class="form-control"/>
+                <span class="text-muted form-text">Enter the code received through Email to Enter your signature</span>
+            </div>
+        </div>
+        <div class="card-header">
+            <a role="button" class="o_sign_select_style float-right btn btn-link">Select Signature Style</a>
+            <a role="button" class="o_sign_clean float-right btn btn-link">Clear Signature</a>
+            <a data-mode="draw" class="o_sign_mode o_sign_mode_draw btn btn-primary" role="button">Draw</a>
+            <a data-mode="auto" class="o_sign_mode o_sign_mode_auto btn" role="button">Autoo</a>
+            <a data-mode="load" class="o_sign_mode o_sign_mode_load btn" role="button">Load</a>
+            <input type="file" name="files[]" class="o_sign_load btn btn-link" role="button"/>
+        </div>
+        <div class="o_sign_signature card-body"/>
+    </div>
+    <div class="mt16 small">By clicking Adopt and Sign, I agree that the chosen signature/initials will be a valid electronic representation of my hand-written signature/initials for all purposes when it is used on documents, including legally binding contracts.</div>
+
+    <div class="o_sign_font_dialog card">
+        <div class="card-header">Styles</div>
+        <div class="o_sign_font_selection card-body"/>
+    </div>
+</div>
+</div>
+
+
+ 
+<t   t-extend="web.sign_name_and_signature">
+<t t-jquery=".o_web_sign_name_and_signature" t-operation="replace">
+<div class="o_web_sign_name_and_signature">
+            <div class="o_web_sign_name_group form-group">
+                <label class="col-form-label" t-att-for="o_web_sign_name_input">Full Name</label>
+                <input type="text" name="signer" t-att-id="o_web_sign_name_input" class="o_web_sign_name_input form-control" t-att-value="widget.defaultName" placeholder="Your name" required=""/>
+            </div>
+  <div  style="display:none;" class="form-group row">
+            <label class="col-sm-3 col-form-label" for="email">Email</label>
+            <div class="col-sm">
+                <div class="input-group" style="display:none;" >
+                    <input type="text" style="display:none;" name="o_sign_email_input" t-att-id="'o_sign_email_input_' + widget.htmlId" placeholder="name@test.com"  t-att-value="widget.signerEmail" class="form-control o_sign_email_input"/>
+                    <button  type="button" style="display:none;" class='o_send_email input-group-append btn btn-sm btn-primary'>Send Email</button>
+                </div>
+                <div id="message" class="message input-group"  name="message"/>
+                <span class="text-muted form-text" style="display:none;">A Email will be sent to the following email address. Please update it if it's not relevant.</span>
+            </div>
+        </div>
+        <!-- <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="validation_code_email">Validation Code</label>
+            <div class="col-sm">
+                <div class="input-group">
+
+                <input type="text" name="validation_code_email" id="o_sign_public_signer_email_input" placeholder="e.g. 314159" class="form-control validation_code_email"/>
+                <button type="button" class='o_send_email_verify input-group-append btn btn-sm btn-primary'>Verify</button>
+                </div>
+                <div id="vmessage" class="vmessage input-group"  name="vmessage"/>
+                <span class="text-muted form-text">Enter the code received through Email to Enter your signature</span>
+                <input type="hidden" class="make_visible" name="make_visible"  value="make_visible" />
+
+            </div>
+        </div> -->
+
+            <!-- <t  t-if="make_visible==checked" class="ssj" id="hdhhd"> -->
+            <label class="col-form-label">التوقيع</label>
+            <div class="o_web_sign_signature_group bg-white card mt-3">
+                        <div class="card-header">
+                
+                    <div class="row no-gutters">
+                        <div class="col-auto">
+                            <a role="button" href="#" t-attf-class="o_web_sign_draw_button mr-2 btn btn-light {{ widget.signMode === 'draw' ? 'active': '' }}">
+                                Draw
+                            </a>
+                        </div>
+                        <div t-attf-class="o_web_sign_draw_clear col-auto ml-auto {{ widget.signMode !== 'draw' ? 'd-none' : '' }}">
+                            <a role="button" href="#" class="btn btn-link">
+                                Clear
+                            </a>
+                        </div>
+                        <div t-attf-class="o_web_sign_auto_select_style col-auto ml-auto {{ widget.signMode !== 'auto' ? 'd-none' : '' }}">
+                            <a role="button" href="#" class="btn btn-link">
+                                Style
+                            </a>
+                        </div>
+                        <div t-attf-class="o_web_sign_load_file col-auto {{ widget.signMode !== 'load' ? 'd-none' : '' }}">
+                            <input type="file" role="button" name="files[]" class="btn btn-link py-0" />
+                        </div>
+                    </div>
+                </div>
+                                <div class="o_signature_stroke position-absolute" name="signer" t-att-id="o_web_sign_name_input" t-att-value="widget.defaultName" placeholder="Your name" required=""/>
+                                       <div class="o_web_sign_signature   p-0 bg-transparent position-relative"/>
+
+                <div t-attf-class="o_web_sign_load_invalid card-footer d-none">
+                    <div class="alert alert-danger mb-0" role="alert">
+                        This file is invalid. Please select an image.
+                    </div>
+                </div>
+
+                           </div>
+            <t t-if="widget.sale_order">
+            <label class="col-form-label">الاسم</label>
+            <div class="o_web_sign_signature_group bg-white card mt-3">
+
+
+                <div class="card-header">
+                
+                    <div class="row no-gutters">
+                        <div class="col-auto">
+                            <a role="button" href="#" t-attf-class="o_web_sign_draw_button mr-2 btn btn-light {{ widget.signMode === 'draw' ? 'active': '' }}">
+                                Draw
+                            </a>
+                        </div>
+                        <div t-attf-class="sign_two_clear col-auto ml-auto {{ widget.signMode !== 'draw' ? 'd-none' : '' }}">
+                            <a role="button" href="#" class="btn btn-link sign_two_clear">
+                                Clear
+                            </a>
+                        </div>
+                        <div t-attf-class="o_web_sign_auto_select_style col-auto ml-auto {{ widget.signMode !== 'auto' ? 'd-none' : '' }}">
+                            <a role="button" href="#" class="btn btn-link">
+                                Style
+                            </a>
+                        </div>
+                        <div t-attf-class="o_web_sign_load_file col-auto {{ widget.signMode !== 'load' ? 'd-none' : '' }}">
+                            <input type="file" role="button" name="files[]" class="btn btn-link py-0"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="o_signature_stroke position-absolute"/>
+
+                <div class="o_web_sign_signature  o_web_sign_signature_two  p-0 bg-transparent position-relative" id="demo"/>
+
+                <div t-attf-class="o_web_sign_load_invalid card-footer d-none">
+                    <div class="alert alert-danger mb-0" role="alert">
+                        This file is invalid. Please select an image.
+                    </div>
+                </div>
+
+        </div>
+        </t>
+            
+            <!-- </t> -->
+
+
+
+  
+            <div class="o_web_sign_auto_font_selection card d-none h-100 flex-column">
+                <div class="card-header">Styles</div>
+                <div class="o_web_sign_auto_font_list card-body text-center p-3 flex-grow-1"/>
+            </div>
+
+</div>
+</t>
+</t>
+<!-- <t t-extend="portal.portal_signature">
+<t t-jquery="div" t-operation="replace">
+            <div class="o_web_sign_name_and_signature"/>
+            <div class="o_portal_sign_controls my-3">
+                <div class="text-right my-3">
+                <h1>ddjddddddddddddddddddddd</h1>
+                    <button type="submit" class="o_portal_sign_submit btn btn-primary" disabled="disabled">
+                        <i class="fa fa-check"/>
+                        <t t-esc="widget.sendLabel"/>
+                    </button>
+                </div>
+            </div>
+</t>
+</t> -->
+</templates>

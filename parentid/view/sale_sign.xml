@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template  id="inherit_portal" inherit_id="portal.signature_form" name="Ask Signature sign custom">
+      <xpath expr="//div[@class='o_portal_signature_form']" position="replace">
+        <div class="o_portal_signature_form"
+            t-att-data-call-url="call_url"
+            t-att-data-default-name="default_name"
+            t-att-data-default-email="default_email"
+            t-att-data-mode="mode"
+            t-att-data-send-label="send_label"
+            t-att-data-signature-ratio="signature_ratio"
+            t-att-data-signature-type="signature_type"
+            t-att-data-font-color="font_color"/>
+      </xpath>
+</template>
+<template id="_doc_sign" name="Sign Doc" inherit_id="sign._doc_sign">
+  <xpath expr="//input[@id='o_sign_input_sign_request_id']" position="after">
+    <input id="o_sign_input_email_address"  name="o_sign_input_email_address" class="o_sign_input_email_address" type="text"  t-att-value="sign_request.create_uid.partner_id.email"/>
+  </xpath>
+</template>
+
+   <template id="sale_order_portal_template_inherit" name="Sales Order Portal Template" inherit_id="sale.sale_order_portal_template">
+        <t t-call="portal.signature_form" position="replace">
+            <input id="sale_order"  name="sale_order" class="sale_order" type="hidden" value="sale_order"/>
+            <t t-call="parentid.inherit_portal">
+                <t t-set="call_url" t-value="sale_order.get_portal_url(suffix='/accept')"/>
+                <t t-set="default_email" t-value="sale_order.partner_id.email" name="test" id="test" class="test"/>
+                <t t-set="default_name" t-value="sale_order.partner_id.name"/>
+            </t>
+        </t>
+    </template>
+</odoo>

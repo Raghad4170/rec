@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_action_account_type_form" action="account.action_account_type_form" name="أنواع الحسابات" groups="account.group_account_readonly" sequence="-1" parent="account.account_account_menu"/>
+    
+    
+    
+        <record id="view_account_type_form_inherit" model="ir.ui.view">
+            <field name="name">account.account.type</field>
+            <field name="model">account.account.type</field>
+            <field name="inherit_id" ref="account.view_account_type_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="internal_group"/>
+            </xpath>
+            </field>
+        </record>
+    
+         <record id="account_journal_dashboard_kanban_view_inherit" model="ir.ui.view">
+            <field name="name">account.account.kanban</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+            <field name="arch" type="xml">
+            <xpath expr="//div[@t-if='dashboard.nb_lines_outstanding_pay_account_balance > 0']" position="after">
+                <div class="row" t-if="dashboard.nb_lines_outstanding_pay_account_balance > 0">
+                    <div id="dashboard_total_account_balance" class="col overflow-hidden text-left">
+                        <span title="total">الصافي</span>
+                    </div>
+                    <div class="col-auto text-right">
+                        <span><t t-esc="dashboard.total_account_balance"/></span>
+                    </div>
+                </div>
+            </xpath>
+            </field>
+        </record>
+    
+
+    <record id="account_move_form_view" model="ir.ui.view">
+        <field name="name">account.move.form.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <div class="oe_title" position="before">
+                <field name="qr_invoice" widget="image" class="oe_avatar"/>
+            </div>
+        </field>
+    </record>
+    
+    
+    <record id="account_asset_form_view" model="ir.ui.view">
+        <field name="name">account.asset.form.view</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='original_value']" position="before">
+                <field name="id" string="كود الأصل"/>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <field name="employees_asset">
+                        <tree name="employees_asset" editable="bottom">
+                            <field name="employee_id"/>
+                            <field name="recived"/>
+                            <field name="back"/>
+                        </tree>    
+                    </field>  
+                </group>
+            </xpath>  
+        </field>
+    </record>
+            
+</odoo>

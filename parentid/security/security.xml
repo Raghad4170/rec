@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record model="ir.module.category" id="module_category_mutn">
+        <field name="name">متن</field>
+        <field name="description">متن</field>
+        <field name="sequence">-100</field>
+    </record>
+    
+    <record model="ir.module.category" id="module_company_employees">
+        <field name="name">موظفي الشركة</field>
+        <field name="description">موظفي الشركة</field>
+        <field name="sequence">-100</field>
+        <field name="parent_id" ref="module_category_mutn"/>
+    </record>
+    
+    <record model="res.groups" id="employee">
+        <field name="name">موظف</field>
+        <field name="category_id" ref="module_company_employees"/>
+        <field name="implied_ids" eval="[(4, ref('project.group_project_user'))]"/>
+    </record>
+
+    <record model="res.groups" id="accountant">
+        <field name="name">محاسب</field>
+        <field name="category_id" ref="module_company_employees"/>
+        <field name="implied_ids" eval="[(4, ref('employee'))]"/>
+    </record>
+
+    <record model="res.groups" id="error404_user">
+        <field name="name">تقني</field>
+        <field name="category_id" ref="module_company_employees"/>
+        <field name="implied_ids" eval="[(4, ref('employee'))]"/>
+    </record>
+
+
+    <record model="res.groups" id="bills_officer">
+        <field name="name">مسؤول الفواتير</field>
+        <field name="category_id" ref="module_company_employees"/>
+        <field name="implied_ids" eval="[(4, ref('employee'))]"/>
+    </record>
+
+
+    <record model="res.groups" id="director">
+        <field name="name">مدير الشركة</field>
+        <field name="category_id" ref="module_company_employees"/>
+        <field name="implied_ids" eval="[(4, ref('employee')), (4, ref('bills_officer'))]"/>
+    </record>
+
+<data noupdate="1">
+    
+    <record model="ir.rule" id="sale_colleagues_rule">
+        <field name="name">sale: Colleagues sale</field>
+        <field name="model_id" ref="model_sale_order"/>
+        <field name="domain_force">['&amp;',('colleagues','=',user.employee_id.id),('is_private','=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record model="ir.rule" id="sale_mangers_rule">
+        <field name="name">sale: Mangers sale</field>
+        <field name="model_id" ref="model_sale_order"/>
+        <field name="domain_force">[('mangers','=',user.employee_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    
+    <record model="ir.rule" id="crm_colleagues_rule">
+        <field name="name">crm: Colleagues crm</field>
+        <field name="model_id" ref="model_crm_lead"/>
+        <field name="domain_force">['&amp;',('colleagues','=',user.employee_id.id),('is_private','=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record model="ir.rule" id="crm_mangers_rule">
+        <field name="name">crm: Mangers crm</field>
+        <field name="model_id" ref="model_crm_lead"/>
+        <field name="domain_force">[('mangers','=',user.employee_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    
+<!--     company -->
+    <record id="website_group_system" model="ir.rule">
+        <field name="name">website: group system</field>
+        <field name="model_id" ref="website.model_website"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record model="ir.rule" id="website_comp_rule">
+        <field name="name">channel: multi-company</field>
+        <field name="model_id" ref="website.model_website"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    </record>
+    
+    <record id="website_page_group_system" model="ir.rule">
+        <field name="name">website page: group system</field>
+        <field name="model_id" ref="website.model_website_page"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    
+    <record id="website_page_company_rule" model="ir.rule">
+        <field name="name">website page: multi-company</field>
+        <field name="model_id" ref="website.model_website_page"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="website_rewrite_group_system" model="ir.rule">
+        <field name="name">website rewrite: group system</field>
+        <field name="model_id" ref="website.model_website_rewrite"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record id="website_rewrite_company_rule" model="ir.rule">
+        <field name="name">website rewrite: multi-company</field>
+        <field name="model_id" ref="website.model_website_rewrite"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    <record id="website_menu_group_system" model="ir.rule">
+        <field name="name">website menu: group system</field>
+        <field name="model_id" ref="website.model_website_menu"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    
+    <record id="website_menu_company_rule" model="ir.rule">
+        <field name="name">website menu: multi-company</field>
+        <field name="model_id" ref="website.model_website_menu"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    <record id="website_visitor_group_system" model="ir.rule">
+        <field name="name">website visitor: group system</field>
+        <field name="model_id" ref="website.model_website_visitor"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record model="ir.rule" id="website_visitor_comp_rule">
+        <field name="name">visitor: multi-company</field>
+        <field name="model_id" ref="model_website_visitor"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="website_track_group_system" model="ir.rule">
+        <field name="name">website track: group system</field>
+        <field name="model_id" ref="website.model_website_track"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record model="ir.rule" id="website_track_comp_rule">
+        <field name="name">track: multi-company</field>
+        <field name="model_id" ref="model_website_track"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+
+    <record model="ir.rule" id="im_livechat_channel_comp_rule">
+        <field name="name">channel: multi-company</field>
+        <field name="model_id" ref="model_im_livechat_channel"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+
+    <record model="ir.rule" id="mail_shortcode_comp_rule">
+        <field name="name">shortcode: multi-company</field>
+        <field name="model_id" ref="model_mail_shortcode"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="survey_survey_comp_rule">
+        <field name="name">survey: multi-company</field>
+        <field name="model_id" ref="model_survey_survey"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="survey_user_input_comp_rule">
+        <field name="name">survey user_input: multi-company</field>
+        <field name="model_id" ref="model_survey_user_input"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="sign_template_comp_rule">
+        <field name="name">sign template: multi-company</field>
+        <field name="model_id" ref="model_sign_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="sign_request_comp_rule">
+        <field name="name">sign request: multi-company</field>
+        <field name="model_id" ref="model_sign_request"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="sign_request_item_comp_rule">
+        <field name="name">sign request item: multi-company</field>
+        <field name="model_id" ref="model_sign_request_item"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+        
+<!--     sign -->
+    <record id="sign_rule_portal_company" model="ir.rule">
+        <field name="name">sign: portal company users</field>
+        <field name="model_id" ref="sign.model_sign_request_item"/>
+        <field name="domain_force">[('parent_id','=',user.partner_id.id)]</field>
+    </record>
+    
+    <record id="sign_rule_portal_full_permission" model="ir.rule">
+        <field name="name">sign: portal company users</field>
+        <field name="model_id" ref="sign.model_sign_request_item"/>
+        <field name="domain_force">[('full_permission', 'in', user.ids)]</field>
+    </record>    
+    
+<!--     helpdesk -->
+        <record id="helpdesk_portal_ticket_rule" model="ir.rule">
+            <field name="name">Tickets: portal users: portal or following</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="domain_force">['|',('message_partner_ids', 'in', [user.partner_id.id]),
+                ('parent_id','=',user.partner_id.id)]</field>
+        </record>
+    
+        <record id="helpdesk_portal_ticket_rule_full_permission" model="ir.rule">
+            <field name="name">Tickets: portal users: portal or following</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="domain_force">['|',('message_partner_ids', 'in', [user.partner_id.id]),
+                ('full_permission', 'in', user.ids)]</field>
+        </record>
+        
+<!--     sale -->
+    <record id="sale_order_rule_portal_main" model="ir.rule">
+        <field name="name">Portal Personal Quotations/Sales Orders</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[('partner_id','=', [user.partner_id.id])]</field>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+
+    <record id="sale_order_rule_portal" model="ir.rule">
+        <field name="name">Portal Personal Quotations/Sales Orders</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[('parent_id','=', [user.partner_id.id])]</field>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+
+
+    <record id="sale_order_rule_author_id_portal" model="ir.rule">
+        <field name="name">Portal Personal Quotations/Sales Orders</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[('author_id','=', [user.partner_id.id])]</field>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+
+    
+    <record id="sale_order_rule_portal_manager_permission" model="ir.rule">
+        <field name="name">Portal Personal Quotations/Sales Orders</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[('manager_permission','=', [user.ids])]</field>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_create" eval="False"/>
+    </record>    
+    
+<!--     invoice -->
+    <record id="account_invoice_rule_portal" model="ir.rule">
+        <field name="name">Portal Personal Account Invoices</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('message_partner_ids','in',[user.partner_id.id])]</field>
+    </record>
+    
+    <record id="account_invoice_companyrule_portal" model="ir.rule">
+        <field name="name">Portal company Account Invoices</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('parent_id','=',user.partner_id.id)]</field>
+    </record>
+
+    
+    <record id="account_invoice_manager_permission_portal" model="ir.rule">
+        <field name="name">Portal company Account Invoices</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">[('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')), ('manager_permission', 'in', user.ids)]</field>
+    </record>
+</data>
+</odoo>

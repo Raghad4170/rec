@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+<template id="account_asset_document">
+    <t t-call="web.external_layout">
+    <div class="page" style="font-family: system-ui, system-ui, Cairo;">
+            <div class="oe_structure"/>
+            <h2 class="mt16" id="informations"><strong>الأصل: <span t-field="doc.name"/></strong></h2>
+        <div class="pt-4"/>
+            <div class="row pt-3" id="informations">
+                <div t-if="doc.id" class="col-auto col-3 mw-100 mb-2">
+                    <strong>كود الأصل:</strong>
+                    <p class="m-0" t-field="doc.id"/>
+                </div>
+                <div t-if="doc.acquisition_date" class="col-auto col-3 mw-100 mb-2">
+                    <strong>تاريخ الأستحواذ:</strong>
+                    <p class="m-0" t-field="doc.acquisition_date"/>
+                </div>
+                <div t-if="doc.original_value" class="col-auto col-3 mw-100 mb-2">
+                    <strong>المبلغ:</strong>
+                    <p class="m-0" t-field="doc.original_value"/>
+                </div>
+            </div>
+        
+        <div class="pt-4"/>
+            <h4 class="mt16" id="informations"><strong>معلومات العهدة</strong></h4>
+            <hr class="my-0"/>
+            <div class="row pt-3" id="informations" t-foreach="doc.employees_asset" t-as="asset">
+                <div t-if="asset.employee_id" class="col-auto col-3 mw-100 mb-2">
+                    <strong>اسم الموظف:</strong>
+                    <p class="m-0" t-field="asset.employee_id.name"/>
+                </div>
+                <div t-if="asset.recived" class="col-auto col-3 mw-100 mb-2">
+                    <strong>تاريخ استلام العهدة:</strong>
+                    <p class="m-0" t-field="asset.recived"/>
+                </div>
+                <div t-if="asset.back" class="col-auto col-3 mw-100 mb-2">
+                    <strong>تاريخ تسليم العهدة:</strong>
+                    <p class="m-0" t-field="asset.back"/>
+                </div>
+            </div>        
+        </div>
+    </t>
+</template>
+
+    
+<template id="report_account_asset">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="parentid.account_asset_document"/>
+        </t>
+    </t>
+</template>
+    
+    <data>
+        <record id="action_report_account_asset" model="ir.actions.report">
+            <field name="name">عهدة الأصل</field>
+            <field name="model">account.asset</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">parentid.report_account_asset</field>
+            <field name="report_file">parentid.report_account_asset</field>
+            <field name="print_report_name">(object.name)</field>
+            <field name="binding_model_id" ref="model_account_asset"/>
+            <field name="binding_type">report</field>
+        </record>     
+    </data>
+    
+</odoo>
+
+
+
+

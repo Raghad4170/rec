@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+ <template id="sale_order_portal_template_amount_untaxed" inherit_id="sale.sale_order_portal_template">
+     <xpath expr="//t[@t-set='title']" position='replace'>
+            <t t-set="title">
+                <h6 class="mb-0"><b>الإجمالي بدون ضريبة القيمة المضافة</b></h6>
+                <h2 class="mb-0"><b t-field="sale_order.amount_untaxed" data-id="amount_untaxed"/></h2>
+            </t>
+     </xpath>    
+ </template>
+
+
+ <template id="portal_my_quotations_inherit" inherit_id="sale.portal_my_quotations">
+     <xpath expr="//span[@t-field='quotation.amount_total']" position='replace'>
+         <span t-field="quotation.amount_untaxed"/>
+     </xpath>
+ </template>
+        
+ <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">    
+    <xpath expr="//t[1]" position="replace">
+    <t t-call="web.external_layout">
+    <div style="font-family: system-ui, system-ui, Cairo;font-size: 20px;">
+        <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
+            <h2 class="mt16">
+                <div align="right">
+                    <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                        <span t-if="doc.state not in ['draft','sent']">الطلب # </span>
+                        <span t-if="doc.state in ['draft','sent']">عرض السعر # </span>
+                    </t>
+                    <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                        <span>فاتورة مبدئية # </span>
+                    </t>
+                    <span t-field="doc.name"/>
+                </div>
+            </h2>
+            <div class="pt-3"/>
+            <div id="informations">
+                <strong><div style="font-size: 25px;" t-field="doc.partner_id.name"/></strong>
+                <strong><div t-if="doc.author_id.name">عناية <span t-field="doc.author_id.function"/>: <span t-field="doc.author_id.name"/></div></strong>
+                <div style="font-size: 20px;">
+                    <span t-field="doc.partner_id.short_ad"/><t t-if="doc.partner_id.building_no"> - <span t-field="doc.partner_id.building_no"/></t>
+                    <t t-if="doc.partner_id.street"> - <span t-field="doc.partner_id.street"/></t>
+                    <div t-if="doc.partner_id.additional_no or doc.partner_id.street2"><span t-field="doc.partner_id.additional_no"/> - <span t-field="doc.partner_id.street2"/></div>
+                    <div t-if="doc.partner_id.country_id or doc.partner_id.city"><span t-field="doc.partner_id.country_id.name"/> - <span t-field="doc.partner_id.city"/></div>
+                </div>
+                <div style="font-size: 20px;" t-if="doc.partner_id.company_registry">السجل التجاري: <span t-field="doc.partner_id.company_registry"/></div>
+                <div style="font-size: 20px;" t-if="doc.partner_id.vat">الرقم الضريبي: <span t-field="doc.partner_id.vat"/></div>
+                <div style="font-size: 20px;" t-if="doc.partner_id.national_id" t-field="doc.partner_id.national_id"/>
+            </div>
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="pt-3"/>
+            <div class="row mt32 mb32" id="informations">
+                <div t-if="doc.client_order_ref" class="col-auto col-3 mw-100 mb-2">
+                    <strong>مرجعك:</strong>
+                    <p class="m-0" t-field="doc.client_order_ref"/>
+                </div>
+                <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
+                    <strong>تاريخ الطلب:</strong>
+                    <p class="m-0" t-field="doc.date_order"/>
+                </div>
+                <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
+                    <strong>تاريخ عرض السعر:</strong>
+                    <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
+                </div>
+                <div t-if="doc.validity_date and doc.state in ['draft', 'sent']" class="col-auto col-3 mw-100 mb-2" name="expiration_date">
+                    <strong>تاريخ الإنتهاء:</strong>
+                    <p class="m-0" t-field="doc.validity_date"/>
+                </div>
+                <div t-if="doc.payment_term_note" class="col-auto col-3 mw-100 mb-2">
+                    <strong>طريقة السداد:</strong>
+                    <p class="m-0" t-field="doc.payment_term_note"/>
+                </div>
+                <div t-if="doc.payment_term_id" class="col-auto col-3 mw-100 mb-2">
+                    <strong>موعد السداد:</strong>
+                    <p class="m-0" t-field="doc.payment_term_id.name"/>
+                </div>
+                <div t-if="doc.company_id.vat" class="col-auto col-3 mw-100 mb-2">
+                    <strong>الرقم الضريبي للشركة:</strong>
+                    <p class="m-0" t-field="doc.company_id.vat"/>
+                </div>
+            </div>
+
+            <!-- Is there a discount on at least one line? -->
+            <t t-set="display_discount" t-value="any(l.discount for l in doc.order_line)"/>
+            <div class="pt-3">
+            <table class="table table-sm o_main_table">
+                <!-- In case we want to repeat the header, remove "display: table-row-group" -->
+                <thead style="display: table-row-group">
+                    <tr>
+                        <th name="th_description" class="text-left">الوصف</th>
+                        <th name="th_quantity" class="text-center">الكمية</th>
+                        <th name="th_quantity" class="text-center">التكلفة</th>
+                    </tr>
+                </thead>
+                <tbody class="sale_tbody">
+                    <t t-set="current_subtotal" t-value="0"/>
+                    <t t-foreach="doc.order_line" t-as="line">
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                        <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'o_line_note' if line.display_type == 'line_note' else ''">
+                            <t t-if="not line.display_type">
+                                <td name="td_name"><span t-field="line.name"/></td>
+                                <td name="td_quantity">
+                                    <span t-field="line.product_uom_qty"/>
+                                </td>
+                                <td name="td_priceunit" class="text-center o_price_total">
+                                    <span t-field="line.price_unit"/>
+                                </td>
+                            </t>
+                            <t t-if="line.display_type == 'line_section'">
+                                <td name="td_section_line" colspan="99">
+                                    <div t-field="line.name" style="text-align: justify;text-justify: inter-word;"/>
+                                </td>
+                                <t t-set="current_section" t-value="line"/>
+                                <t t-set="current_subtotal" t-value="0"/>
+                            </t>
+                            <t t-if="line.display_type == 'line_note'">
+                                <td name="td_note_line" colspan="99">
+                                    <div style="font-size: 20px;text-align:justify;" t-field="line.name"/>
+                                </td>
+                            </t>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            </div>
+            <p t-if="doc.note">
+                <div><h3>تطبق الشروط والأحكام</h3></div>
+            </p>
+            <div class="pt-3 clearfix" name="so_total_summary">
+                <div id="total" class="row" name="total">
+                    <div t-attf-class="#{'col-4' if report_type != 'html' else 'col-sm-7 col-md-5'} ml-auto">
+                        <table class="table table-sm">
+                            <tr class="border-black o_subtotal" style="">
+                                <td name="td_amount_untaxed_label"><strong>الإجمالي الفرعي</strong></td>
+                                <td name="td_amount_untaxed" class="text-right">
+                                    <span t-field="doc.amount_untaxed"/>
+                                </td>
+                            </tr>
+                            <tr class="border-black o_subtotal">
+                                <td name="td_amount_tax_lable"><strong>الضريبة (VAT)</strong></td>
+                                <td name="td_amount_tax" class="text-right">
+                                    <span t-field="doc.amount_tax"/>
+                                </td>
+                            </tr>
+                            <tr class="border-black o_subtotal">
+                                <td><strong>الإجمالي</strong></td>
+                                <td class="text-right o_price_total">
+                                    <span t-field="doc.amount_total"/>
+                                </td>
+                            </tr>
+                            <tr style="display: none;" class="border-black o_subtotal">
+                                <td><strong>الإجمالي</strong></td>
+                                <td class="text-right o_price_total">
+                                    <span t-field="doc.amount_total"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-5 oe_structure"/>
+            <p id="fiscal_position_remark" t-if="doc.fiscal_position_id and doc.fiscal_position_id.sudo().note">
+                <strong>الموقف المالي:</strong>
+                <span t-field="doc.fiscal_position_id.sudo().note"/>
+            </p>
+            <div class="text-center" t-if="doc.company_id.invoice_report">
+                <p>
+                    <b>
+                        <span t-field="doc.company_id.invoice_report"/>
+                    </b>
+                </p>
+            </div> 
+            <div class="row">
+                <div t-if="doc.company_person.user_ids.sign_signature and doc.signature" align='right'>
+                    <div class="text-center">
+                        <strong>يعتمد</strong>
+                    </div>
+                    <div t-if="doc.company_person.user_ids.sign_signature and doc.signature" class="text-center mt32 ml64 mr4" name="signature">
+                        <div>
+                            <img t-att-src="image_data_uri(doc.company_person.user_ids.sign_signature)" style="max-height: 4cm; max-width: 8cm;"/>
+                        </div>
+                        <div>
+                            <p t-if="doc.company_person.name" t-field="doc.company_person.name"/>
+                            <p t-field="doc.company_id.name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto"/>
+                <div align='left'>
+                    <div class="text-center">
+                        <strong>التوقيع</strong>
+                    </div>
+                    <div t-if="doc.signature" class="text-center mt32 ml64 mr4" name="signature">
+                        <div>
+                            <img t-att-src="image_data_uri(doc.signature)" style="max-height: 2cm; max-width: 8cm;"/>
+                        </div>
+                        <div t-if="doc.signature_name" >
+                            <img t-att-src="image_data_uri(doc.signature_name)" style="max-height: 2cm; max-width: 8cm;"/>
+                        </div>
+                        <div>
+                            <p t-if="doc.author_id.name and not doc.signature_name" t-field="doc.author_id.name"/>
+                            <p t-field="doc.author_id.function"/>
+                            <p t-field="doc.signed_by"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p t-if="doc.note" style="page-break-after:always;"></p>
+            <div t-if="doc.note"  style="page-break-inside: avoid;display: block">
+                <h3 class="text-center"><b>
+                    الشروط والأحكام
+                </b></h3>
+                <hr class="mt-0 mb-1"/>
+                <div t-if="doc.sale_type == 'استشارات'">
+                    <div style="page-break-inside: avoid;height: 83em;width:31%;-webkit-columns: 0 0;-webkit-column-gap: 2em;-webkit-column-rule: 1px solid black;font-size: 17px;display:block;text-align:justify;">
+                        <div t-field="doc.sides_sale" style="page-break-inside: avoid;display: block"/>
+                        <div t-field="doc.note" style="page-break-inside: avoid;display: block"/>
+                            <div class="text-center">
+                                <div>
+                                    <strong>التوقيع</strong>
+                                </div>
+                                <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature">
+                                    <div>
+                                        <img t-att-src="image_data_uri(doc.signature)" style="max-height: 2cm; max-width: 4cm;"/>
+                                    </div>
+                                    <div t-if="doc.signature_name" >
+                                        <img t-att-src="image_data_uri(doc.signature_name)" style="max-height: 2cm; max-width: 4cm;"/>
+                                    </div>
+                                    <div>
+                                        <p t-if="doc.author_id.name and not doc.signature_name" t-field="doc.author_id.name"/>
+                                        <p t-field="doc.signed_by"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <strong>الختم</strong>
+                            </div>
+                    </div>
+                </div>
+                <div t-if="doc.sale_type == 'قضايا'">
+                    <div style="page-break-inside: avoid;height: 78em;width:31%;-webkit-columns: 0 0;-webkit-column-gap: 2em;-webkit-column-rule: 1px solid black;font-size: 16px;display:block;text-align:justify;">
+                        <div t-field="doc.sides_sale" style="page-break-inside: avoid;display: block"/>
+                        <div t-field="doc.note" style="page-break-inside: avoid;display: block"/>
+                            <div class="text-center">
+                                <div>
+                                    <strong>التوقيع</strong>
+                                </div>
+                                <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature">
+                                    <div>
+                                        <img t-att-src="image_data_uri(doc.signature)" style="max-height: 2cm; max-width: 4cm;"/>
+                                    </div>
+                                    <div t-if="doc.signature_name" >
+                                        <img t-att-src="image_data_uri(doc.signature_name)" style="max-height: 2cm; max-width: 4cm;"/>
+                                    </div>
+                                    <div>
+                                        <p t-if="doc.author_id.name and not doc.signature_name" t-field="doc.author_id.name"/>
+                                        <p t-field="doc.signed_by"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <strong>الختم</strong>
+                            </div>
+                    </div>
+                </div>
+                <div t-if="doc.sale_type == 'خدمات'">
+                    <div style="page-break-inside: avoid;height: 78em;width:31%;-webkit-columns: 0 0;-webkit-column-gap: 2em;-webkit-column-rule: 1px solid black;font-size: 16px;display:block;text-align:justify;">
+                        <div t-field="doc.sides_sale" style="page-break-inside: avoid;display: block"/>
+                        <div t-field="doc.note" style="page-break-inside: avoid;display: block"/>
+                            <div class="text-center">
+                                <div>
+                                    <strong>التوقيع</strong>
+                                </div>
+                                <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature">
+                                    <div>
+                                        <img t-att-src="image_data_uri(doc.signature)" style="max-height: 2cm; max-width: 4cm;"/>
+                                    </div>
+                                    <div t-if="doc.signature_name" >
+                                        <img t-att-src="image_data_uri(doc.signature_name)" style="max-height: 2cm; max-width: 4cm;"/>
+                                    </div>
+                                    <div>
+                                        <p t-if="doc.author_id.name and not doc.signature_name" t-field="doc.author_id.name"/>
+                                        <p t-field="doc.signed_by"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <strong>الختم</strong>
+                            </div>
+                    </div>
+                </div>
+                <div t-if="doc.sale_type == 'اخرى'">
+                    <div t-field="doc.note" style="page-break-inside: avoid;display: block"/>
+                    <div class="pt-5" align="left">
+                        <div class="mt32 ml64 mr4" name="signature">
+                        <div class="offset-8 text-center">
+                            <strong>التوقيع</strong>
+                        </div>
+                        </div>
+                        <div t-if="doc.signature" class="mt32 ml64 mr4" name="signature">
+                            <div class="offset-8 text-center">
+                                <img t-att-src="image_data_uri(doc.signature)" style="max-height: 2cm; max-width: 4cm;"/>
+                            </div>
+                            <div t-if="doc.signature_name" >
+                                <img t-att-src="image_data_uri(doc.signature_name)" style="max-height: 2cm; max-width: 4cm;"/>
+                            </div>
+                            <div class="offset-8 text-center">
+                                <p t-if="doc.author_id.name and not doc.signature_name" t-field="doc.author_id.name"/>
+                                <p t-field="doc.signed_by"/>
+                            </div>
+                            <div class="text-center">
+                                <strong>الختم</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </t>
+    </xpath>
+ </template>
+
+    
+ <template id="sale_order_portal_content_inherit" inherit_id="sale.sale_order_portal_content">
+     <xpath expr="//div[2]/div/div[3]" position='replace'>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <strong t-if="sale_order.partner_shipping_id == sale_order.partner_invoice_id" class="d-block mb-1">العنوان:</strong>
+                        <strong t-if="sale_order.partner_shipping_id != sale_order.partner_invoice_id" class="d-block mb-1">العنوان:</strong>
+                        <address t-field="sale_order.partner_invoice_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                    </div>
+                     <t t-if="sale_order.partner_shipping_id != sale_order.partner_invoice_id">
+                        <div id="shipping_address" class="col-lg-6">
+                            <strong class="d-block mb-1">العنوان:</strong>
+                            <address t-field="sale_order.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                        </div>
+                    </t>
+                    <div t-if="sale_order.author_id.name" class="col-lg-6">
+                        <strong class="d-block mb-1">عناية <span t-if="sale_order.author_id.function" t-field="sale_order.author_id.function"/>: </strong>
+                        <span t-field="sale_order.author_id.name"/>
+                    </div>
+                </div>
+     </xpath>
+     <xpath expr="//table[@id='sales_order_table']" position='replace'>
+                <table t-att-data-order-id="sale_order.id" t-att-data-token="sale_order.access_token" class="table table-sm" id="sales_order_table">
+                    <thead class="bg-100">
+                        <tr>
+                            <th class="text-left">الوصف</th>
+                            <th class="text-right">الكمية</th>
+                            <th class="text-center">التكلفة</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                    <t t-set="current_subtotal" t-value="0"/>
+                    <t t-foreach="sale_order.order_line" t-as="line">
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                        <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'o_line_note' if line.display_type == 'line_note' else ''">
+                            <t t-if="not line.display_type">
+                                <td id="product_name"><span t-field="line.name"/></td>
+                                <td class="text-right">
+                                    <div id="quote_qty">
+                                        <span t-field="line.product_uom_qty"/>
+                                    </div>
+                                </td>
+                                <td name="td_priceunit" class="text-center o_price_total">
+                                    <span t-field="line.price_unit"/>
+                                </td>
+                            </t>
+                            <t t-if="line.display_type == 'line_section'">
+                                <td name="td_section_line" colspan="99">
+                                    <span t-field="line.name"/>
+                                </td>
+                                <t t-set="current_section" t-value="line"/>
+                                <t t-set="current_subtotal" t-value="0"/>
+                            </t>
+                            <t t-if="line.display_type == 'line_note'">
+                                <td name="td_note_line" colspan="99">
+                                    <div style="text-align:justify;" t-field="line.name"/>
+                                </td>
+                            </t>
+                        </tr>
+                    </t>
+                    </tbody>
+                </table>
+     </xpath>
+     <xpath expr="//div[@id='so_date']" position='replace'>
+        <div class="row" id="so_date">
+            <div class="col-auto col-3 mw-100 mb-2">
+                <t t-if="sale_order.state in ['sale', 'done', 'cancel']">
+                <strong>تاريخ الطلب:</strong> 
+                </t>
+                <t t-else="">
+                    <strong>تاريخ عرض السعر:</strong>
+                </t>
+                <p t-field="sale_order.date_order" t-options='{"widget": "date"}'/>
+            </div>
+            <div class="col-auto col-3 mw-100 mb-2" t-if="sale_order.validity_date">
+                <strong>تاريخ الإنتهاء:</strong>
+                <p t-field="sale_order.validity_date" t-options='{"widget": "date"}'/>
+            </div>         
+            <div t-if="sale_order.payment_term_note" class="col-auto col-3 mw-100 mb-2">
+                <strong>طريقة السداد:</strong>
+                <p class="m-0" t-field="sale_order.payment_term_note"/>
+            </div>
+            <div t-if="sale_order.payment_term_id" class="col-auto col-3 mw-100 mb-2">
+                <strong>موعد السداد:</strong>
+                <p class="m-0" t-field="sale_order.payment_term_id.name"/>
+            </div>
+         </div>
+     </xpath>
+     <xpath expr="//section[@id='terms']" position='replace'>
+            <section id="terms" class="mt-5" t-if="sale_order.note">
+                <h3 class="">الشروط والأحكام</h3>
+                <hr class="mt-0 mb-1"/>
+                <div t-field="sale_order.note" style="text-align: justify;text-justify: inter-word;"/>
+            </section>
+     </xpath>
+     <xpath expr="//section[@id='signature']" position='replace'>
+            <section t-if="sale_order.signature" id="signature" name="Signature">
+                <div class="row mt-4" name="signature">
+                    <div t-attf-class="#{'col-3' if report_type != 'html' else 'col-sm-7 col-md-4'} ml-auto text-center">
+                        <h5>التوقيع</h5>
+                        <img t-att-src="image_data_uri(sale_order.signature)" style="max-height: 6rem; max-width: 100%;"/>
+                        <p t-if="sale_order.author_id.name" t-field="sale_order.author_id.name"/>
+                        <p t-field="sale_order.author_id.function"/>
+                        <p t-field="sale_order.signed_by"/>
+                    </div>
+                </div>
+            </section>
+
+     </xpath>
+     <xpath expr="//section[@t-if='sale_order.payment_term_id']" position='replace'>
+     </xpath>
+ </template>
+    
+    <template id="sale.sale_order_portal_content_totals_table">
+        <table class="table table-sm">
+            <t t-set="tax_totals" t-value="json.loads(sale_order.tax_totals_json)"/>
+            <t t-set="tax_percentage" t-value="sale_order.tax_percentage"/>
+            <t t-call="account.document_tax_totals"/>
+        </table>
+    </template>
+
+    
+</odoo>
+

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>  
+    
+    <template id="web.external_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t>
+            <t t-if="partner_id">
+                <t t-set="partner" t-value="partner_id"/>
+            </t>
+            <t t-elif="o and 'partner_id' in o and o.partner_id.sudo()">
+                <t t-set="partner" t-value="o.partner_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="partner" t-value="False"/>
+            </t>
+        </t>
+
+        <t t-if="company.external_report_layout_id" t-call="{{company.external_report_layout_id.sudo().key}}"><t t-out="0"/></t>
+        <t t-else="else" t-call="web.external_layout_standard"><t t-out="0"/></t>
+
+    </template>
+
+    
+    
+    <template id="web.external_layout_standard">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <div class="o_boxed_header">
+            <div class="row">
+                <div class="col-auto" align="right">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                </div>
+                <div class="col-6 text-right mb4">
+                    <h4 class="mt0" t-field="company.report_header"/>
+                </div>
+                <div class="col-auto" align="left">
+                    <t t-if="partner">
+                        <t t-if="partner.is_company">
+                             <img t-if="partner.image_1920" t-att-src="image_data_uri(partner.image_1920)" alt="Logo"/>
+                        </t>
+                        <t t-elif="partner.parent_id.is_company">
+                             <img t-if="partner.parent_id.image_1920" t-att-src="image_data_uri(partner.parent_id.image_1920)" alt="Logo"/>
+                        </t>
+                        <t t-else="">
+                             <img t-if="partner.image_1920" t-att-src="image_data_uri(partner.image_1920)" alt="Logo"/>
+                        </t>
+                    </t>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div t-attf-class="article o_report_layout_boxed o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-raw="0"/>
+        </div>
+
+        
+        <div style="font-family: system-ui, system-ui, ElMessiri;font-size: 14px;" t-attf-class="footer o_clean_footer o_company_#{company.id}_layout">
+         <div style="text-align: justify;text-justify: inter-word;">
+            <span t-field="company.footer"/>
+          </div>
+            <div class="text-center">
+                <div t-if="report_type == 'pdf'">
+                   صفحة: <span class="page"/> / <span class="topage"/> 
+                </div>
+            </div>
+        </div>
+        
+<!--         <div style="font-family: system-ui, system-ui, MarkaziText;" t-attf-class="footer o_clean_footer o_company_#{company.id}_layout">
+            <div class="row">
+                <div width="50%" class="col-auto" align="right">
+                    <table>
+                        <tr>
+                            <td>
+                                <div style="text-align: justify;">
+                                    <div width="100%" t-field="company.name"/>
+                                    <div width="100%" t-field="company.c_form"/>
+                                    <div width="100%" t-if="company.company_registry">السجل التجاري: <span t-field="company.company_registry"/></div>
+                                    <div t-if="company.capital">رأس المال: <span t-field="company.capital"/></div>
+                                    <div t-field="company.email"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div width="30%" class="col-auto" align="center" name="center_footer">
+                    <div t-if="report_type == 'pdf'">
+                       صفحة: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+                <div width="30%" class="col-auto" align="left" style="text-align: justify;text-align-last: justify;">
+                    <table>
+                        <tr>
+                            <td>
+                                <div t-field="company.short_ad"/>
+                                <div t-if="company.building_no or company.street"><span t-field="company.building_no"/> <span t-field="company.street"/></div>
+                                <div t-if="company.additional_no or company.street2 or company.city"><span t-field="company.additional_no"/> <span t-field="company.street2"/> <span t-field="company.city"/></div>
+                                <div t-field="company.country_id.name"/>
+                                <div t-field="company.website"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div> -->
+    </template>
+</odoo>
+
+
+
+

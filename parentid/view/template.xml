@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+<template id="basicnew_layout">
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <div class="o_boxed_header">
+            <div class="row mb8">
+                <div class="col-6">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                </div>
+                <div class="col-6 text-right mb4">
+                    <h4 class="mt0" t-field="company.report_header"/>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div t-attf-class="article o_report_layout_boxed o_company_#{doc.company_id.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-raw="0"/>
+        </div>
+
+
+        <div style="font-family: system-ui, system-ui, Cairo;" t-attf-class="footer o_clean_footer o_company_#{doc.company_id.id}_layout">
+         <div style="text-align: justify;text-justify: inter-word;">
+            <span t-field="doc.company_id.footer"/>
+          </div>
+            <div class="text-center">
+                <div t-field="doc.company_id.report_footer"/>
+                <div t-if="report_type == 'pdf'">
+                   صفحة: <span class="page"/> / <span class="topage"/> 
+                </div>
+            </div>
+        </div>
+</template>
+
+</odoo>

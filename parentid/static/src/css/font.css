@@ -1,0 +1,35 @@
+@font-face {
+    font-family: 'MarkaziText';
+    src:  url(/parentid/static/src/fonts/MarkaziText-Regular.ttf);
+
+}
+
+@font-face {
+    font-family: 'Cairo';
+    src:  url(/parentid/static/src/fonts/Cairo-Regular.ttf);
+
+}
+
+
+@font-face {
+    font-family: 'ElMessiri';
+    src:  url(/parentid/static/src/fonts/ElMessiri-Regular.ttf);
+
+}
+
+@font-face {
+    font-family: 'tejwal_regular';
+    src:  url(/parentid/static/src/fonts/Tajawal-Regular.ttf);
+
+}
+:root {
+    --o-community-color: #4f9084;
+    --o-enterprise-color: #4f9084;
+    --o-enterprise-primary-color: #4f9084;
+}
+
+
+nav#oe_main_menu_navbar.o_main_navbar {
+    background-color : var(--o-enterprise-color);
+
+}

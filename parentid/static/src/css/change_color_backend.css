@@ -1,0 +1,139 @@
+:root {
+    --o-community-color: #4f9084;
+    --o-enterprise-color: #4f9084;
+    --o-enterprise-primary-color: #4f9084;
+}
+
+
+.o_home_menu_background {
+    background: url(/web_enterprise/static/src/img/home-menu-bg-overlay.svg),
+        linear-gradient(to right bottom, #77717e, var(--o-enterprise-color));
+    background-size: cover;
+}
+
+body.o_is_superuser .o_menu_systray:before {
+    background-color: var(--o-enterprise-color);
+}
+
+
+/* o_burger_menu */
+
+.o_burger_menu .o_burger_menu_topbar {
+    background: var(--o-enterprise-color);
+}
+
+.o_burger_menu .o_burger_menu_content {
+    background: var(--o-enterprise-color);
+}
+
+.o_burger_menu .o_burger_menu_content.o_burger_menu_dark {
+    background-color: var(--o-enterprise-color);
+}
+
+
+.o_loading_indicator.o_loading > span {
+    background-color: var(--o-enterprise-color);
+}
+
+.o_tooltip::before {
+    background: radial-gradient(lighten(var(--o-enterprise-color), 7%), var(--o-enterprise-color));
+}
+
+
+.o_tooltip.active {
+    border: 3px solid var(--o-enterprise-color) !important;
+}
+
+.o_tooltip.active::before {
+    border-color: var(--o-enterprise-color);
+}
+
+.o_ChatWindowHeader {
+    background-color: var(--o-enterprise-color);
+}
+
+/* dropdown_item_navbar */
+
+.o_main_navbar > ul > li.o_extra_menu_items.show > ul > li > a {
+    background-color: var(--o-enterprise-color) !important;
+}
+
+.o_main_navbar .show .dropdown-toggle {
+    background-color: var(--o-enterprise-color);
+}
+
+#search_icon {
+    color: var(--o-enterprise-color);
+}
+
+.o_web_client .o_mobile_search .o_mobile_search_header {
+    background-color: var(--o-enterprise-color);
+}
+.o_searchview .o_searchview_facet .o_searchview_facet_label {
+    background-color: var(--o-enterprise-color);
+}
+
+.o_main_navbar .badge {
+    border: 1px solid var(--o-enterprise-color);
+}
+
+
+.o_web_client .o_main_navbar {
+    background-color: var(--o-enterprise-color);
+    border-color: var(--o-enterprise-color);
+}
+
+.o_main_navbar > a:hover,
+.o_main_navbar > a:focus,
+.o_main_navbar > ul > li > a:hover,
+.o_main_navbar > ul > li > a:focus,
+.o_main_navbar > button:hover,
+.o_main_navbar > button:focus {
+    background-color: var(--o-enterprise-color);
+    opacity: 0.7;
+}
+
+.o_main_navbar {
+    background-color : var(--o-enterprise-color);
+}
+
+/* dropdown_item_navbar */
+.oe_main_menu_navbar.o_main_navbar {
+    background-color : var(--o-enterprise-color);
+
+}
+.o_main_navbar .show .dropdown-toggle {
+    background-color: var(--o-enterprise-color)
+}
+/* datetime-picker */
+
+.picker-switch span.fa.primary {
+    background-color: var(--o-enterprise-color);
+}
+
+.picker-switch span.fa.primary:hover {
+    background-color: var(--o-enterprise-color);
+    opacity: 0.7;
+}
+
+div.bootstrap-datetimepicker-widget.dropdown-menu.usetwentyfour.bottom li.picker-switch.accordion-toggle tbody a {
+    color: var(--o-enterprise-color);
+}
+
+.datepicker .table-sm > tbody > tr > td.active,
+.datepicker .table-sm > tbody > tr > td .active {
+    background-color: var(--o-enterprise-color);
+}
+
+.bootstrap-datetimepicker-widget table td span.active {
+    background-color: var(--o-enterprise-color);
+}
+
+.datepicker .table-sm > thead {
+    background-color: var(--o-enterprise-color);
+}
+
+.datepicker .table-sm > thead > tr:first-child th:hover {
+    background-color: var(--o-enterprise-color);
+    opacity: 0.7;
+}

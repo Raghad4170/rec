@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+        <record id="website_menu_tickets" model="website.menu">
+            <field name="name">التذاكر</field>
+            <field name="url">/my/tickets</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">5</field>
+            <field name="group_ids" eval="[(4, ref('base.group_portal')),
+                                          (4,ref('base.group_user')),]"/>
+        </record>
+        
+        <record id="website_menu_signatures" model="website.menu">
+            <field name="name">التواقيع</field>
+            <field name="url">/my/signatures</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">6</field>
+            <field name="group_ids" eval="[(4, ref('base.group_portal')),
+                                          (4,ref('base.group_user')),]"/>
+        </record>
+
+<!--         <record id="website_menu_quotes" model="website.menu">
+            <field name="name">عروض الأسعار</field>
+            <field name="url">/my/quotes</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">7</field>
+            <field name="group_ids" eval="[(4, ref('base.group_portal')),
+                                          (4,ref('base.group_user')),]"/>
+        </record>
+        
+        <record id="website_menu_invoices" model="website.menu">
+            <field name="name">الفواتير</field>
+            <field name="url">/my/invoices</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">8</field>
+            <field name="group_ids" eval="[(4, ref('base.group_portal')),
+                                          (4,ref('base.group_user')),]"/>
+        </record>
+        
+        <record id="website_menu_subscription" model="website.menu">
+            <field name="name">الاشتراكات</field>
+            <field name="url">/my/subscription</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">9</field>
+            <field name="group_ids" eval="[(4, ref('base.group_portal')),
+                                          (4,ref('base.group_user')),]"/>
+        </record>
+         -->
+    </data>
+</odoo>
