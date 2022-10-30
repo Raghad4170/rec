@@ -12,7 +12,7 @@
                     <span class="m-0" t-field="doc.date_custody"/>
                     </strong>
                 </h4>
-            </div> 
+            </div>
         
         <div class="pt-4"/>
             <h4 class="mt16" id="informations"><strong>بيانات المستلم:</strong></h4>
